@@ -25,21 +25,17 @@ load_dotenv()
 models.Base.metadata.create_all(bind=engine)
 
 # Add new columns to existing databases that pre-date the enhanced prompt schema.
-# SQLite ALTER TABLE does not support IF NOT EXISTS, so we catch the duplicate-column error.
 _NEW_COLUMNS = [
-    "ALTER TABLE test_cases ADD COLUMN priority TEXT",
-    "ALTER TABLE test_cases ADD COLUMN test_data TEXT",
-    "ALTER TABLE test_cases ADD COLUMN dependencies TEXT",
-    "ALTER TABLE test_cases ADD COLUMN compliance_note TEXT",
-    "ALTER TABLE test_cases ADD COLUMN is_tested INTEGER NOT NULL DEFAULT 0",
+    "ALTER TABLE test_cases ADD COLUMN IF NOT EXISTS priority TEXT",
+    "ALTER TABLE test_cases ADD COLUMN IF NOT EXISTS test_data TEXT",
+    "ALTER TABLE test_cases ADD COLUMN IF NOT EXISTS dependencies TEXT",
+    "ALTER TABLE test_cases ADD COLUMN IF NOT EXISTS compliance_note TEXT",
+    "ALTER TABLE test_cases ADD COLUMN IF NOT EXISTS is_tested BOOLEAN NOT NULL DEFAULT FALSE",
 ]
 with engine.connect() as _conn:
     for _stmt in _NEW_COLUMNS:
-        try:
-            _conn.execute(text(_stmt))
-            _conn.commit()
-        except Exception:
-            pass  # column already exists
+        _conn.execute(text(_stmt))
+    _conn.commit()
 
 # Initialize OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
