@@ -57,6 +57,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+print("ALLOWED_ORIGINS:", _allowed_origins)
 # ============= AUTH ENDPOINTS =============
 
 @app.post("/signup", response_model=schemas.UserResponse)
