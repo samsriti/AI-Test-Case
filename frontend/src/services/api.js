@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
 
 // How long with no activity before the user is logged out
 const IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes

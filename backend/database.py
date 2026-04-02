@@ -6,17 +6,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Database URL - SQLite
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test_cases.db"
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test_cases.db")
 
-# For PostgreSQL:
-# SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
-# Example: "postgresql://user:password@localhost/dbname"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, 
-    connect_args={"check_same_thread": False}  # Only needed for SQLite
-)
+if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL,
+        connect_args={"check_same_thread": False},
+    )
+else:
+    engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

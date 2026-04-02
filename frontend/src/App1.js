@@ -19,7 +19,7 @@ function App1() {
     setTestCases([]); // Clear previous results
     
     try {
-      const response = await axios.post('http://127.0.0.1:8000/generate-test-cases', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000'}/generate-test-cases`, {
         requirement_text: requirement
       });
       
